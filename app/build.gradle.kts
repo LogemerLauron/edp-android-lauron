@@ -5,17 +5,17 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace =
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId =
         minSdk = 32
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner =
     }
 
     buildTypes {
@@ -46,8 +46,10 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     
-    // Navigation and Serialization
+
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 

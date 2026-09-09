@@ -1,212 +1,219 @@
 package com.example.myapplication
 
-import android.content.res.Configuration
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.ui.theme.ProfileTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("My Profile", style = MaterialTheme.typography.titleLarge) },
-                navigationIcon = {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More options")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { }) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
+fun ProfileScreen(
+    viewModel: ProfileViewModel = viewModel()
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    if (state.isPreview) {
+        ProfilePreview(
+            state = state,
+            onBack = {
+                viewModel.backToEdit()
             }
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(16.dp)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        )
+    } else {
+        ProfileForm(
+            state = state,
+            viewModel = viewModel
+        )
+    }
+}
+
+@Composable
+fun ProfileForm(
+    state: ProfileUiState,
+    viewModel: ProfileViewModel
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Text(
+            text = "My Profile",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        OutlinedTextField(
+            value = state.name,
+            onValueChange = { viewModel.onNameChange(it) },
+            label = { Text("Full name") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = state.email,
+            onValueChange = { viewModel.onEmailChange(it) },
+            label = { Text("Email") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = state.contactNumber,
+            onValueChange = { viewModel.onContactChange(it) },
+            label = { Text("Contact number") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = state.address,
+            onValueChange = { viewModel.onAddressChange(it) },
+            label = { Text("Address") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = state.username,
+            onValueChange = { viewModel.onUsernameChange(it) },
+            label = { Text("Username") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Skills",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Box(
-                modifier = Modifier.size(100.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(96.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primaryContainer)
-                        .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.laurongooglephoto),
-                        contentDescription = "Profile photo",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .size(18.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF4CAF50))
-                        .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape)
-                )
-            }
-
-
-            Text(
-                text = "Logemer S. Lauron",
-                style = MaterialTheme.typography.headlineSmall
+            OutlinedTextField(
+                value = state.newSkill,
+                onValueChange = { viewModel.onNewSkillChange(it) },
+                label = { Text("Add a skill") },
+                modifier = Modifier.weight(1f)
             )
-            Text(
-                text = "Android Developer",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Button(
-                    onClick = { },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("Message")
-                }
-                OutlinedButton(
-                    onClick = { },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.secondary
-                    )
-                ) {
-                    Text("Follow")
-                }
+            Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = { viewModel.addSkill() }) {
+                Text("Add")
             }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
 
-            // Region E: Stats card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium,
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            ) {
+        if (state.skills.isEmpty()) {
+            Text("No skills added yet.", style = MaterialTheme.typography.bodyMedium)
+        } else {
+            state.skills.forEach { skill ->
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    StatColumn(number = "128", label = "Posts")
-                    StatColumn(number = "4.2k", label = "Followers")
-                    StatColumn(number = "96", label = "Following")
+                    Text(
+                        text = "• $skill",
+                        modifier = Modifier.weight(1f)
+                    )
+                    TextButton(
+                        onClick = {
+                            viewModel.removeSkill(skill)
+                        }
+                    ) {
+                        Text("Remove")
+                    }
                 }
             }
+        }
 
-            // Region F: Contact info card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium,
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    InfoRow(icon = Icons.Default.Email, text = "llauron69303@liceo.edu.ph")
-                    Spacer(modifier = Modifier.height(12.dp))
-                    InfoRow(icon = Icons.Default.LocationOn, text = "Carmen CDO")
-                }
-            }
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = {
+                viewModel.showPreview()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Preview")
         }
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun StatColumn(number: String, label: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = number,
-            style = MaterialTheme.typography.titleMedium
-        )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-@Composable
-fun InfoRow(icon: ImageVector, text: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = text)
-    }
-}
-
-@Preview(showBackground = true, name = "Light Mode")
-@Composable
-fun ProfileScreenPreviewLight() {
-    ProfileTheme(darkTheme = false) {
+fun ProfileScreenFormPreview() {
+    ProfileTheme {
         ProfileScreen()
     }
 }
 
-@Preview(
-    showBackground = true,
-    name = "Dark Mode",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
 @Composable
-fun ProfileScreenPreviewDark() {
-    ProfileTheme(darkTheme = true) {
-        ProfileScreen()
+fun ProfilePreview(
+    state: ProfileUiState,
+    onBack: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Text(
+            text = "Profile Preview",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        Text(text = "Name: ${state.name}", fontSize = 18.sp)
+        Text(text = "Email: ${state.email}", fontSize = 18.sp)
+        Text(text = "Contact: ${state.contactNumber}", fontSize = 18.sp)
+        Text(text = "Address: ${state.address}", fontSize = 18.sp)
+        Text(text = "Username: ${state.username}", fontSize = 18.sp)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Skills:",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        if (state.skills.isEmpty()) {
+            Text(text = "No skills added yet.", modifier = Modifier.padding(top = 8.dp))
+        } else {
+            state.skills.forEach { skill ->
+                Text(
+                    text = "• $skill",
+                    modifier = Modifier.padding(top = 4.dp),
+                    fontSize = 16.sp
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Back to edit")
+        }
     }
 }

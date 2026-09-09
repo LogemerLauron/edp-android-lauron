@@ -9,10 +9,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.ui.theme.ProfileTheme
 
 @Composable
 fun ProfileScreen(
@@ -117,21 +119,25 @@ fun ProfileForm(
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        state.skills.forEach { skill ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "• $skill",
-                    modifier = Modifier.weight(1f)
-                )
-                TextButton(
-                    onClick = {
-                        viewModel.removeSkill(skill)
-                    }
+        if (state.skills.isEmpty()) {
+            Text("No skills added yet.", style = MaterialTheme.typography.bodyMedium)
+        } else {
+            state.skills.forEach { skill ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Remove")
+                    Text(
+                        text = "• $skill",
+                        modifier = Modifier.weight(1f)
+                    )
+                    TextButton(
+                        onClick = {
+                            viewModel.removeSkill(skill)
+                        }
+                    ) {
+                        Text("Remove")
+                    }
                 }
             }
         }
@@ -146,6 +152,14 @@ fun ProfileForm(
         ) {
             Text("Preview")
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileScreenFormPreview() {
+    ProfileTheme {
+        ProfileScreen()
     }
 }
 
@@ -195,7 +209,7 @@ fun ProfilePreview(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        OutlinedButton(
+        Button(
             onClick = onBack,
             modifier = Modifier.fillMaxWidth()
         ) {
